@@ -29,5 +29,20 @@ router.delete('/:id', async (req, res) => {
     }
 })
 
+router.put('/:id', jsonParser, async (req, res) => {
+    try {
+        const targetId = req.params.id
+        const newLikes = req.body.likes
+        await Blog.update(
+            { likes: newLikes },
+            { where: { id: targetId } }
+        )
+        const updatedBlog = await Blog.findByPk(targetId)
+        return res.status(200).json(updatedBlog)
+    } catch (error) {
+        return res.status(400).json({ error })
+    }
+})
+
 module.exports = router
 
