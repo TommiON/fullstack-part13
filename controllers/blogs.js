@@ -1,8 +1,9 @@
 const router = require('express').Router()
 const { Blog } = require('../models')
 const { jsonParser } = require('../utils/jsonParser')
+const errorHandler = require('./errorHandler')
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const blogs = await Blog.findAll()
         return res.json(blogs)
@@ -11,7 +12,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.post('/', jsonParser, async (req, res) => {
+router.post('/', jsonParser, async (req, res, next) => {
     try {
         const blog = await Blog.create(req.body)
         return res.json(blog)
@@ -20,16 +21,17 @@ router.post('/', jsonParser, async (req, res) => {
     }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
         await Blog.destroy({where: {id: req.params.id }})
         return res.status(200).send('tuhottu')
     } catch (error) {
-        return res.status(400).json({ error })
+        console.log('virhe?')
+        next(error)
     }
 })
 
-router.put('/:id', jsonParser, async (req, res) => {
+router.put('/:id', jsonParser, async (req, res, next) => {
     try {
         const targetId = req.params.id
         const newLikes = req.body.likes
@@ -40,9 +42,13 @@ router.put('/:id', jsonParser, async (req, res) => {
         const updatedBlog = await Blog.findByPk(targetId)
         return res.status(200).json(updatedBlog)
     } catch (error) {
-        return res.status(400).json({ error })
+        console.log('virhe?')
+        next(error)
+        //return res.status(400).json({ error })
     }
 })
+
+router.use(errorHandler)
 
 module.exports = router
 
