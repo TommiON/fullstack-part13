@@ -1,14 +1,13 @@
 const router = require('express').Router()
 const { User } = require('../models')
-const { jsonParser } = require('../utils/jsonParser')
-const errorHandler = require('./errorHandler')
+const errorHandler = require('../utils/errorHandler')
 
-router.post('/', jsonParser, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
     try {
         const newUser = await User.create(req.body)
         res.json(newUser)
-    } catch (error) {
-        console.log(error)
+    } catch(error) {
+        next(error)
     }
 })
 
@@ -21,7 +20,7 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-router.put('/:username', jsonParser, async (req, res, next) => {
+router.put('/:username', async (req, res, next) => {
     try {
         const targetUsername = req.params.username
         const newName = req.body.name
@@ -37,5 +36,7 @@ router.put('/:username', jsonParser, async (req, res, next) => {
         console.log(error)
     }
 })
+
+//router.use(errorHandler)
 
 module.exports = router

@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const { Blog } = require('../models')
 const { jsonParser } = require('../utils/jsonParser')
-const errorHandler = require('./errorHandler')
 
 router.get('/', async (req, res, next) => {
     try {
@@ -12,7 +11,7 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-router.post('/', jsonParser, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
     try {
         const blog = await Blog.create(req.body)
         return res.json(blog)
@@ -31,7 +30,7 @@ router.delete('/:id', async (req, res, next) => {
     }
 })
 
-router.put('/:id', jsonParser, async (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
     try {
         const targetId = req.params.id
         const newLikes = req.body.likes
@@ -47,8 +46,6 @@ router.put('/:id', jsonParser, async (req, res, next) => {
         //return res.status(400).json({ error })
     }
 })
-
-router.use(errorHandler)
 
 module.exports = router
 
