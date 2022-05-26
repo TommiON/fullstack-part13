@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { User } = require('../models')
+const { User, Blog } = require('../models')
 const errorHandler = require('../utils/errorHandler')
 
 router.post('/', async (req, res, next) => {
@@ -13,7 +13,9 @@ router.post('/', async (req, res, next) => {
 
 router.get('/', async (req, res, next) => {
     try {
-        const allUsers = await User.findAll()
+        const allUsers = await User.findAll({
+            include: {model: Blog}
+        })
         res.json(allUsers)
     } catch (error) {
         console.log(error)
