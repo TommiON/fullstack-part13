@@ -5,7 +5,12 @@ const { jsonParser } = require('../utils/jsonParser')
 
 router.get('/', async (req, res, next) => {
     try {
-        const blogs = await Blog.findAll()
+        const blogs = await Blog.findAll({
+            include: {
+                model: User,
+                attributes: ['name']
+            }
+        })
         return res.json(blogs)
     } catch(error) {
         return res.status(400).json({ error })
@@ -32,6 +37,7 @@ router.delete('/:id', tokenExtractor, async (req, res, next) => {
         } else {
             res.status(401).send({error: 'vain blogin omistaja saa tuhota'})
         }       
+
     } catch (error) {
         console.log('virhe')
         next(error)
