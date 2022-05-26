@@ -22,12 +22,18 @@ router.post('/', tokenExtractor, async (req, res, next) => {
     }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', tokenExtractor, async (req, res, next) => {
     try {
-        await Blog.destroy({where: {id: req.params.id }})
-        return res.status(200).send('tuhottu')
+        const toBeDestroyed = await Blog.findByPk(req.params.id)
+        
+        if (toBeDestroyed.userId === req.decodedToken.id) {
+            await Blog.destroy({where: {id: req.params.id }})
+            return res.status(200).send('tuhottu')
+        } else {
+            res.status(401).send({error: 'vain blogin omistaja saa tuhota'})
+        }       
     } catch (error) {
-        console.log('virhe?')
+        console.log('virhe')
         next(error)
     }
 })
