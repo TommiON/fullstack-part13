@@ -27,7 +27,10 @@ router.get('/', async (req, res, next) => {
                         }
                     }
                 ]
-            }
+            },
+            order: [
+                ['likes', 'DESC']
+            ]
         })
         return res.json(blogs)
     } catch(error) {
