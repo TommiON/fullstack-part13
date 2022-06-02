@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { Op } = require("sequelize");
 const { User, Blog, Readinglist } = require('../models')
 const errorHandler = require('../utils/errorHandler')
 
@@ -23,6 +24,16 @@ router.get('/', async (req, res, next) => {
 })
 
 router.get('/:id', async (req, res, next) => {
+    let searchTerm = {
+        [Op.in]: [true, false]
+    }
+    if(req.query.read) {
+        searchTerm = req.query.read
+    }
+
+    console.log('parametri: ', req.query.read)
+    console.log('hakutermi: ', searchTerm)
+    
     try {
         const user = await User.findOne({
             where: { id: req.params.id },
@@ -31,7 +42,8 @@ router.get('/:id', async (req, res, next) => {
                 attributes: ['author', 'url', 'title'],
                 include: {
                     model: Readinglist,
-                    attributes: ['read', 'id']
+                    attributes: ['read', 'id'],
+                    where: { read: searchTerm }
                 },
                 through: {
                     attributes: []
