@@ -19,7 +19,7 @@ router.put('/:id', tokenExtractor, async (req, res, next) => {
         )
 
         if((target[0]) === 0) {
-            res.send('Blogia ei löydy tai ei ole sinun blogisi')
+            res.send('Blogia ei löydy tai ei ole sinun lukulistallasi!')
         }
 
         res.status(200).send('luettu!')
