@@ -7,10 +7,14 @@ Blog.belongsTo(User)
 
 User.belongsToMany(Blog, { through: Readinglist })
 Blog.belongsToMany(User, { through: Readinglist })
+User.hasMany(Readinglist)
+Readinglist.belongsTo(User)
+Blog.hasMany(Readinglist)
+Readinglist.belongsTo(Blog)
 
 //Blog.sync( {alter: true} )
 //User.sync( {alter: true} )
 
 module.exports = {
-    Blog, User
+    Blog, User, Readinglist
 }
