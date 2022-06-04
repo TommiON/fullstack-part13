@@ -2,12 +2,19 @@ const jwt = require('jsonwebtoken')
 const router = require('express').Router()
 
 const { User } = require('../models')
+const { Session } = require('../models')
 const { SECRET } = require('../utils/config')
 
 router.post('/', async (req, res) => {
     const user = await User.findOne({
         where: { username: req.body.username}
     })
+
+    if(user.disabled) {
+        return res.status(401).json({
+            error: 'käyttäjätunnus on poistettu käytöstä'
+        })
+    }
 
     const passwordCorrect = req.body.password === 'sekred'
 
@@ -23,6 +30,16 @@ router.post('/', async (req, res) => {
     }
 
     const token = jwt.sign(userForToken, SECRET)
+
+    try {
+        await Session.create({
+            userId: user.id,
+            token: token
+        })
+    } catch(error) {
+        console.log('Session-taulu, virhe: ', error)
+    }
+  
 
     res.status(200).send({token, username: user.username, name: user.name})
 })

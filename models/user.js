@@ -17,6 +17,10 @@ User.init({
         type: DataTypes.TEXT,
         allowNull: false,
         validate: { isEmail: true }
+    },
+    disabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
     }, {
         sequelize,
